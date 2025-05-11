@@ -1,9 +1,11 @@
-﻿using RM.Model;
+﻿using Bussiness_Layer;
+using RM.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,9 +16,11 @@ namespace RM.View
 {
     public partial class frmStaffView : SampleView
     {
+        private StaffBL staffBL;
         public frmStaffView()
         {
             InitializeComponent();
+            staffBL = new StaffBL();
         }
 
         private void frmStaffView_Load(object sender, EventArgs e)
@@ -25,14 +29,15 @@ namespace RM.View
         }
         public void GetData()
         {
-            string qry = "Select * from staff where sName like '%" + txtSearch.Text + "%' ";
-            ListBox lb = new ListBox();
-            lb.Items.Add(dgvid);
-            lb.Items.Add(dgvName);
-            lb.Items.Add(dgvPhone);
-            lb.Items.Add(dgvRole);
+            try
+            {
+                guna2DataGridView1.DataSource = staffBL.GetStaff();
 
-            MainClass.LoadData(qry, guna2DataGridView1, lb);
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 
         } 
         public override void btnAdd_Click(object sender, EventArgs e)
@@ -68,16 +73,32 @@ namespace RM.View
                 guna2MessageDialog1.Buttons = Guna.UI2.WinForms.MessageDialogButtons.YesNo;
                 if (guna2MessageDialog1.Show("Are you sure you want to delete?") == DialogResult.Yes)
                 {
-                    int id = Convert.ToInt32(guna2DataGridView1.CurrentRow.Cells["dgvid"].Value);
-                    string qry = "Delete from staff where staffID= " + id + "";
-                    Hashtable ht = new Hashtable();
-                    MainClass.SQl(qry, ht);
+                    string id = Convert.ToString(guna2DataGridView1.CurrentRow.Cells["dgvid"].Value);
+                    string name = Convert.ToString(guna2DataGridView1.CurrentRow.Cells["dgvName"].Value);
+                    string role = Convert.ToString(guna2DataGridView1.CurrentRow.Cells["dgvRole"].Value);
+                    string phone = Convert.ToString(guna2DataGridView1.CurrentRow.Cells["dgvPhone"].Value);
+                    Transfer_Object.Staff staff = new Transfer_Object.Staff(name,role,phone);
+                    staff.staffId = id;
+                    staffBL.Delete(staff);
                     guna2MessageDialog1.Icon = Guna.UI2.WinForms.MessageDialogIcon.Information;
                     guna2MessageDialog1.Buttons = Guna.UI2.WinForms.MessageDialogButtons.OK;
                     guna2MessageDialog1.Show("Delete successfully");
                     GetData();
                 }
 
+            }
+        }
+
+        private void guna2DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void guna2DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex >= 0 && guna2DataGridView1.Columns[e.ColumnIndex].Name == "dgvSno")
+            {
+                e.Value = e.RowIndex + 1; // Gán số thứ tự từ 1 đến n
             }
         }
     }

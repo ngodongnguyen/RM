@@ -1,22 +1,27 @@
-﻿using RM.Model;
+﻿using Bussiness_Layer;
+using RM.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Transfer_Object;
 
 namespace RM.View
 {
     public partial class frmProductView : SampleView
     {
+        private ProductBL productBL;
         public frmProductView()
         {
             InitializeComponent();
+            productBL = new ProductBL();
         }
 
         private void frmProductView_Load(object sender, EventArgs e)
@@ -24,20 +29,40 @@ namespace RM.View
             GetData();
 
         }
+        //public void GetData()
+        //{
+        //    string qry = "select pID, pName, pPrice, categoryID, c.catName from products p inner join category c on c.catID = p.categoryID where pName like '%" + txtSearch.Text + "%' ";
+        //    ListBox lb = new ListBox();
+        //    lb.Items.Add(dgvid);
+        //    lb.Items.Add(dgvName);
+        //    lb.Items.Add(dgvPrice);
+        //    lb.Items.Add(dgvcatID);
+        //    lb.Items.Add(dgvcat);
+
+
+        //    MainClass.LoadData(qry, guna2DataGridView1, lb);
+
+        //}
         public void GetData()
         {
-            string qry = "select pID, pName, pPrice, categoryID, c.catName from products p inner join category c on c.catID = p.categoryID where pName like '%" + txtSearch.Text + "%' ";
-            ListBox lb = new ListBox();
-            lb.Items.Add(dgvid);
-            lb.Items.Add(dgvName);
-            lb.Items.Add(dgvPrice);
-            lb.Items.Add(dgvcatID);
-            lb.Items.Add(dgvcat);
-
-
-            MainClass.LoadData(qry, guna2DataGridView1, lb);
-
+            try
+            {
+                var products = productBL.GetProducts();  // Lấy danh sách sản phẩm
+                if (products != null && products.Count > 0)
+                {
+                    guna2DataGridView1.DataSource = products;
+                }
+                else
+                {
+                    MessageBox.Show("No data available.");
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
+
         public override void btnAdd_Click(object sender, EventArgs e)
         {
             MainClass.BlurBackground(new Model.frmProductAdd());
@@ -68,16 +93,27 @@ namespace RM.View
                 guna2MessageDialog1.Buttons = Guna.UI2.WinForms.MessageDialogButtons.YesNo;
                 if (guna2MessageDialog1.Show("Are you sure you want to delete?") == DialogResult.Yes)
                 {
-                    int id = Convert.ToInt32(guna2DataGridView1.CurrentRow.Cells["dgvid"].Value);
-                    string qry = "Delete from products where pID= " + id + "";
-                    Hashtable ht = new Hashtable();
-                    MainClass.SQl(qry, ht);
+                    string id = Convert.ToString(guna2DataGridView1.CurrentRow.Cells["dgvid"].Value);
+                    string price = Convert.ToString(guna2DataGridView1.CurrentRow.Cells["dgvPrice"].Value);
+                    string pName = Convert.ToString(guna2DataGridView1.CurrentRow.Cells["dgvName"].Value);
+                    string categoryID = Convert.ToString(guna2DataGridView1.CurrentRow.Cells["dgvcatID"].Value);
+                    Product product=new Product(pName,price,categoryID);
+                    product.pId = id;
+                    productBL.Delete(product);
                     guna2MessageDialog1.Icon = Guna.UI2.WinForms.MessageDialogIcon.Information;
                     guna2MessageDialog1.Buttons = Guna.UI2.WinForms.MessageDialogButtons.OK;
                     guna2MessageDialog1.Show("Delete successfully");
                     GetData();
                 }
 
+            }
+        }
+
+        private void guna2DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex >= 0 && guna2DataGridView1.Columns[e.ColumnIndex].Name == "dgvSno")
+            {
+                e.Value = e.RowIndex + 1; // Gán số thứ tự từ 1 đến n
             }
         }
     }

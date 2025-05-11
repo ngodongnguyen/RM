@@ -13,7 +13,7 @@ namespace RM
 {
     internal class MainClass
     {
-        public static readonly string con_string = "Data Source=LAPTOP-REF0F8RT\\SQLEXPRESS;Initial Catalog = RM; Integrated Security = True";
+        public static readonly string con_string = "Data Source=NGUYEN;Initial Catalog = RM; Integrated Security = True";
         public static SqlConnection con = new SqlConnection(con_string);
 
         public static bool IsValidUser(string user, string pass)

@@ -145,6 +145,7 @@
             this.Name = "SampleAdd";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SampleAdd";
+            this.Load += new System.EventHandler(this.SampleAdd_Load);
             this.guna2Panel1.ResumeLayout(false);
             this.guna2Panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox1)).EndInit();

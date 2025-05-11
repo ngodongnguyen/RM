@@ -28,5 +28,10 @@ namespace RM
         {
 
         }
+
+        private void SampleAdd_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

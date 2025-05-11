@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bussiness_Layer;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,9 +14,12 @@ namespace RM.Model
 {
     public partial class frmStaffAdd : SampleAdd
     {
+        private StaffBL staffBL;
+
         public frmStaffAdd()
         {
             InitializeComponent();
+            staffBL= new StaffBL();
         }
 
         public int id = 0;
@@ -26,32 +30,20 @@ namespace RM.Model
         }
         public override void btnSave_Click(object sender, EventArgs e)
         {
-            string qry = "";
-
-            if (id == 0) //insert
+            string name = txtName.Text;
+            string phone=txtPhone.Text;
+            string role = cbRole.Text;
+            Transfer_Object.Staff staff = new Transfer_Object.Staff(name,role,phone);
+            if (id == 0)
             {
-                qry = "Insert into staff Values(@Name, @phone, @role)";
+                staffBL.Add(staff);
+                guna2MessageDialog1.Show("Saved successfully");
             }
-            else //update
+            else
             {
-                qry = "Update staff Set sName = @Name, sPhone = @phone, sRole = @role where staffID= @id";
-
-
-            }
-            Hashtable ht = new Hashtable();
-            ht.Add("@id", id);
-            ht.Add("@Name", txtName.Text);
-            ht.Add("@phone", txtPhone.Text);
-            ht.Add("@role", cbRole.Text);
-
-            if (MainClass.SQl(qry, ht) > 0)
-            {
-                guna2MessageDialog1.Show("Saved successfully....");
-                id = 0;
-                txtName.Text = "";
-                txtPhone.Text = "";
-                cbRole.SelectedIndex = -1;
-                txtName.Focus();
+                staff.staffId = id.ToString();
+                staffBL.Update(staff);
+                guna2MessageDialog1.Show("Update successfully");
             }
 
         }

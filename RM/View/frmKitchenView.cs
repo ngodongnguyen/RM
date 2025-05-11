@@ -1,4 +1,5 @@
-﻿using Guna.UI2.WinForms;
+﻿using Bussiness_Layer;
+using Guna.UI2.WinForms;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,14 +12,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Transfer_Object;
 
 namespace RM.View
 {
     public partial class frmKitchenView : Form
     {
+        private tblMainBL tblMainBL;
+
         public frmKitchenView()
         {
             InitializeComponent();
+            tblMainBL = new tblMainBL();
         }
 
         private void frmKitchenView_Load(object sender, EventArgs e)
@@ -29,134 +34,117 @@ namespace RM.View
         private void GetOrders()
         {
             flowLayoutPanel1.Controls.Clear();
-            string qry1 = @"Select * from tblMain where status = 'Pending' ";
-            SqlCommand cmd1 = new SqlCommand(qry1, MainClass.con);
-            DataTable dt1 = new DataTable();
-            SqlDataAdapter da = new SqlDataAdapter(cmd1);
-            da.Fill(dt1);
+            List<tblMain> tbl = tblMainBL.GetTables_Pending();
 
-            FlowLayoutPanel p1;
-
-            for (int i = 0; i < dt1.Rows.Count; i++)
+            foreach (var order in tbl)
             {
-                p1 = new FlowLayoutPanel();
-                p1.AutoSize = true;
-                p1.Width = 230;
-                p1.Height = 350;
-                p1.FlowDirection = FlowDirection.TopDown;
-                p1.BorderStyle = BorderStyle.FixedSingle;
-                p1.Margin = new Padding(10, 10, 10, 10);
+                FlowLayoutPanel p1 = CreateFlowLayoutPanel();
 
-
-                FlowLayoutPanel p2;
-                p2 = new FlowLayoutPanel();
-                p2.BackColor = Color.FromArgb(50, 55, 89);
-                p2.AutoSize = true;
-                p2.Width = 230;
-                p2.Height = 125;
-                p2.FlowDirection = FlowDirection.TopDown;
-                p2.Margin = new Padding(0, 0, 0, 0);
-
-                Label lb1 = new Label();
-                lb1.ForeColor = Color.White;
-                lb1.Margin = new Padding(10, 10, 3, 0);
-                lb1.AutoSize = true;
-
-                Label lb2 = new Label();
-                lb2.ForeColor = Color.White;
-                lb2.Margin = new Padding(10, 5, 3, 0);
-                lb2.AutoSize = true;
-
-                Label lb3 = new Label();
-                lb3.ForeColor = Color.White;
-                lb3.Margin = new Padding(10, 5, 3, 0);
-                lb3.AutoSize = true;
-
-                Label lb4 = new Label();
-                lb4.ForeColor = Color.White;
-                lb4.Margin = new Padding(10, 5, 3, 0);
-                lb4.AutoSize = true;
-
-                lb1.Text = "Table : " + dt1.Rows[i]["TableName"].ToString();
-                lb2.Text = "Waiter Name : " + dt1.Rows[i]["WaiterName"].ToString();
-                lb3.Text = "Order Time : " + dt1.Rows[i]["tTime"].ToString();
-                lb4.Text = "Order Type : " + dt1.Rows[i]["orderType"].ToString();
-
-                p2.Controls.Add(lb1);
-                p2.Controls.Add(lb2);
-                p2.Controls.Add(lb3);
-                p2.Controls.Add(lb4);
+                // Create and style the header panel (p2)
+                FlowLayoutPanel p2 = CreateHeaderPanel(order);
 
                 p1.Controls.Add(p2);
 
-                //now add products
+                // Add products to the order details
+                List<tblMainDetail> tblMainDetails = tblMainBL.LoadEntries(order.MainID);
 
-                int mid = 0;
-                mid = Convert.ToInt32(dt1.Rows[i]["MainID"].ToString());
-
-                string qry2 = @"Select * from tblMain m 
-                                        inner join tblDetails d on m.MainID = d.MainID
-                                        inner join products p on p.pID = d.proID
-                                        Where m.MainID = " + mid + " ";
-                SqlCommand cmd2 = new SqlCommand(qry2, MainClass.con);
-                DataTable dt2 = new DataTable();
-                SqlDataAdapter da2 = new SqlDataAdapter(cmd2);
-                da2.Fill(dt2);
-
-                for (int j = 0; j < dt2.Rows.Count; j++)
+                foreach (var detail in tblMainDetails)
                 {
-                    Label lb5 = new Label();
-                    lb5.ForeColor = Color.Black;
-                    lb5.Margin = new Padding(10, 5, 3, 0);
-                    lb5.AutoSize = true;
-
-                    int no = j + 1;
-                    lb5.Text = "" + no + " " + dt2.Rows[j]["pName"].ToString() + " " + dt2.Rows[j]["qty"].ToString();
-
+                    Label lb5 = new Label
+                    {
+                        ForeColor = Color.Black,
+                        Margin = new Padding(10, 5, 3, 0),
+                        AutoSize = true,
+                        Text = $"{tblMainDetails.IndexOf(detail) + 1} {detail.ProName} {detail.Qty}"
+                    };
                     p1.Controls.Add(lb5);
                 }
 
-                //Add button to change the order status
+                // Add button to change order status
+                Guna2Button completeButton = CreateCompleteButton(order.MainID);
+                p1.Controls.Add(completeButton);
 
-                Guna.UI2.WinForms.Guna2Button b = new Guna.UI2.WinForms.Guna2Button();
-                b.AutoRoundedCorners = true;
-                b.Size = new Size(100, 35);
-                b.FillColor = Color.FromArgb(241, 85, 126);
-                b.Margin = new Padding(30, 5, 3, 10);
-                b.Text = "Complete";
-                b.Tag = dt1.Rows[i]["MainID"].ToString(); //store the id
                 flowLayoutPanel1.Controls.Add(p1);
-
-                b.Click += new EventHandler(b_click);
-                p1.Controls.Add(b);
-
-
             }
-
         }
+
+        private FlowLayoutPanel CreateFlowLayoutPanel()
+        {
+            return new FlowLayoutPanel
+            {
+                AutoSize = true,
+                Width = 230,
+                Height = 350,
+                FlowDirection = FlowDirection.TopDown,
+                BorderStyle = BorderStyle.FixedSingle,
+                Margin = new Padding(10)
+            };
+        }
+
+        private FlowLayoutPanel CreateHeaderPanel(tblMain order)
+        {
+            FlowLayoutPanel p2 = new FlowLayoutPanel
+            {
+                BackColor = Color.FromArgb(50, 55, 89),
+                AutoSize = true,
+                Width = 230,
+                Height = 125,
+                FlowDirection = FlowDirection.TopDown,
+                Margin = new Padding(0)
+            };
+
+            p2.Controls.Add(CreateLabel("Table : ", order.TableName));
+            p2.Controls.Add(CreateLabel("Waiter Name : ", order.WaiterName));
+            p2.Controls.Add(CreateLabel("Order Time : ", order.tTime.ToString()));
+            p2.Controls.Add(CreateLabel("Order Type : ", order.OrderType));
+
+            return p2;
+        }
+
+        private Label CreateLabel(string labelText, string value)
+        {
+            return new Label
+            {
+                ForeColor = Color.White,
+                Margin = new Padding(10, 5, 3, 0),
+                AutoSize = true,
+                Text = labelText + value
+            };
+        }
+
+        private Guna2Button CreateCompleteButton(int mainId)
+        {
+            Guna2Button button = new Guna2Button
+            {
+                AutoRoundedCorners = true,
+                Size = new Size(100, 35),
+                FillColor = Color.FromArgb(241, 85, 126),
+                Margin = new Padding(30, 5, 3, 10),
+                Text = "Complete",
+                Tag = mainId.ToString() // Store the MainID for later reference
+            };
+            button.Click += new EventHandler(b_click);
+
+            return button;
+        }
+
         private void b_click(object sender, EventArgs e)
         {
-            int id = Convert.ToInt32((sender as Guna.UI2.WinForms.Guna2Button).Tag.ToString());
+            int id = Convert.ToInt32((sender as Guna2Button).Tag.ToString());
 
-            guna2MessageDialog1.Icon = Guna.UI2.WinForms.MessageDialogIcon.Question;
-            guna2MessageDialog1.Buttons = Guna.UI2.WinForms.MessageDialogButtons.YesNo;
-            if (guna2MessageDialog1.Show("Are you sure you want to delete?") == DialogResult.Yes)
+            guna2MessageDialog1.Icon = MessageDialogIcon.Question;
+            guna2MessageDialog1.Buttons = MessageDialogButtons.YesNo;
+            if (guna2MessageDialog1.Show("Are you sure you want to mark this order as complete?") == DialogResult.Yes)
             {
-                string qry = @"Update tblMain set status = 'complete' Where MainID = @ID";
-                Hashtable ht = new Hashtable();
-                ht.Add("@ID", id);
+                int row = tblMainBL.Update_Kitchen(id);
 
-                if(MainClass.SQl(qry,ht)>0)
+                if (row > 0)
                 {
-                    guna2MessageDialog1.Buttons = Guna.UI2.WinForms.MessageDialogButtons.OK;
-                    guna2MessageDialog1.Show("Saved Successfully");
+                    guna2MessageDialog1.Buttons = MessageDialogButtons.OK;
+                    guna2MessageDialog1.Show("Order status updated successfully.");
                 }
-                GetOrders();
+                GetOrders();  // Refresh the orders list
             }
         }
     }
 }
-
-
-
-

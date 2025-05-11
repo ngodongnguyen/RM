@@ -123,6 +123,8 @@
             this.guna2DataGridView1.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.guna2DataGridView1.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.guna2DataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.guna2DataGridView1_CellClick);
+            this.guna2DataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.guna2DataGridView1_CellContentClick);
+            this.guna2DataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.guna2DataGridView1_CellFormatting);
             // 
             // dgvSno
             // 
@@ -136,6 +138,7 @@
             // 
             // dgvid
             // 
+            this.dgvid.DataPropertyName = "staffID";
             this.dgvid.HeaderText = "id";
             this.dgvid.MinimumWidth = 6;
             this.dgvid.Name = "dgvid";
@@ -144,6 +147,7 @@
             // 
             // dgvName
             // 
+            this.dgvName.DataPropertyName = "sName";
             this.dgvName.HeaderText = "Name";
             this.dgvName.MinimumWidth = 6;
             this.dgvName.Name = "dgvName";
@@ -151,6 +155,7 @@
             // 
             // dgvPhone
             // 
+            this.dgvPhone.DataPropertyName = "sPhone";
             this.dgvPhone.HeaderText = "Phone";
             this.dgvPhone.MinimumWidth = 6;
             this.dgvPhone.Name = "dgvPhone";
@@ -158,6 +163,7 @@
             // 
             // dgvRole
             // 
+            this.dgvRole.DataPropertyName = "sRole";
             this.dgvRole.HeaderText = "Role";
             this.dgvRole.MinimumWidth = 6;
             this.dgvRole.Name = "dgvRole";

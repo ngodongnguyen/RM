@@ -133,16 +133,15 @@
             // 
             // dgvSno
             // 
-            this.dgvSno.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.dgvSno.FillWeight = 70F;
             this.dgvSno.HeaderText = "Sr#";
             this.dgvSno.MinimumWidth = 70;
             this.dgvSno.Name = "dgvSno";
             this.dgvSno.ReadOnly = true;
-            this.dgvSno.Width = 70;
             // 
             // dgvid
             // 
+            this.dgvid.DataPropertyName = "MainID";
             this.dgvid.HeaderText = "id";
             this.dgvid.MinimumWidth = 6;
             this.dgvid.Name = "dgvid";
@@ -151,6 +150,7 @@
             // 
             // dgvTable
             // 
+            this.dgvTable.DataPropertyName = "TableName";
             this.dgvTable.HeaderText = "Table";
             this.dgvTable.MinimumWidth = 6;
             this.dgvTable.Name = "dgvTable";
@@ -158,6 +158,7 @@
             // 
             // dgvWaiter
             // 
+            this.dgvWaiter.DataPropertyName = "WaiterName";
             this.dgvWaiter.HeaderText = "Waiter";
             this.dgvWaiter.MinimumWidth = 6;
             this.dgvWaiter.Name = "dgvWaiter";
@@ -165,6 +166,7 @@
             // 
             // dgvType
             // 
+            this.dgvType.DataPropertyName = "orderType";
             this.dgvType.HeaderText = "Order Type";
             this.dgvType.MinimumWidth = 6;
             this.dgvType.Name = "dgvType";
@@ -172,6 +174,7 @@
             // 
             // dgvStatus
             // 
+            this.dgvStatus.DataPropertyName = "status";
             this.dgvStatus.HeaderText = "Status";
             this.dgvStatus.MinimumWidth = 6;
             this.dgvStatus.Name = "dgvStatus";
@@ -179,6 +182,7 @@
             // 
             // dgvTotal
             // 
+            this.dgvTotal.DataPropertyName = "total";
             this.dgvTotal.HeaderText = "Total";
             this.dgvTotal.MinimumWidth = 6;
             this.dgvTotal.Name = "dgvTotal";

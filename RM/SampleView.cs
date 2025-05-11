@@ -27,5 +27,10 @@ namespace RM
         {
 
         }
+
+        private void SampleView_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

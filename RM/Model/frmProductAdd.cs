@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bussiness_Layer;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,32 +11,45 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Transfer_Object;
 
 namespace RM.Model
 {
     public partial class frmProductAdd : SampleAdd
     {
+        private ProductBL productBL;
+        private CategoryBL categoryBL;
         public frmProductAdd()
         {
             InitializeComponent();
-        }
-        private void frmProductAdd_Load(object sender, EventArgs e)
-        {
-            //for cb fill
-            string qry = "Select catID 'id', catName 'name' from category";
-            MainClass.CBFILL(qry, cbCat);
-            if(cID >0) //for update
-            {
-                cbCat.SelectedValue = cID;
-            }
-            if (id  >0)
-            {
-                forUpdateLoadData();
-            }
+            productBL = new ProductBL();
+            categoryBL = new CategoryBL();
         }
 
         public int id = 0;
         public int cID = 0;
+        private void frmProductAdd_Load(object sender, EventArgs e)
+        {
+            //for cb fill
+            //string qry = "Select catID 'id', catName 'name' from category";
+            //MainClass.CBFILL(qry, cbCat);
+            //if(cID >0) //for update
+            //{
+            //    cbCat.SelectedValue = cID;
+            //}
+            //if (id  >0)
+            //{
+            //    forUpdateLoadData();
+            //}
+            List<Category> categories = categoryBL.GetCategories();
+
+            // Đảm bảo ComboBox trống trước khi thêm dữ liệu
+            cbCat.DataSource = categories;
+
+            cbCat.DisplayMember = "CatName";                  // Hiển thị tên danh mục
+            cbCat.ValueMember = "Id";
+        }
+
 
         string filePath;
         Byte[] imageByteArray;
@@ -51,63 +65,39 @@ namespace RM.Model
         }
         public override void btnSave_Click(object sender, EventArgs e)
         {
-
-            string qry = "";
-            if (id == 0) //insert
+            try
             {
-                qry = "Insert into products values(@Name, @price, @cat, @img)";
+                string name = txtName.Text;
+                string price = txtPrice.Text;
+                string categoryID = cbCat.SelectedValue.ToString();
+                Image temp = new Bitmap(txtImage.Image);
+                MemoryStream ms = new MemoryStream();
+                temp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                imageByteArray = ms.ToArray();
+                // Nếu có giá trị hợp lệ, tiến hành tạo sản phẩm
+                Product product = new Product(name, price, categoryID,imageByteArray);
+                // Kiểm tra SelectedValue trước khi sử dụng
+                if (id==0)
+                {
+
+                    productBL.Add(product);
+
+                    guna2MessageDialog1.Show("Saved successfully");
+                }
+                else
+                {
+                    product.pId = id.ToString();
+                    productBL.Update(product);
+                    guna2MessageDialog1.Show("Update succesfully");
+                }
             }
-            else //update
+            catch (Exception ex)
             {
-                qry = "Update products Set pName = @Name, pPrice = @price, categoryID = @cat, pImage = @img where pID= @id";
-
-
-            }
-
-            //for image
-            Image temp = new Bitmap(txtImage.Image);
-            MemoryStream ms = new MemoryStream();
-            temp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);  
-            imageByteArray = ms.ToArray();
-            Hashtable ht = new Hashtable();
-            ht.Add("@id", id);
-            ht.Add("@Name", txtName.Text);
-            ht.Add("@price", txtPrice.Text);
-            ht.Add("@cat", Convert.ToInt32(cbCat.SelectedValue));
-            ht.Add("@img", imageByteArray);
-            if (MainClass.SQl(qry, ht) > 0)
-            {
-                guna2MessageDialog1.Show("Saved successfully....");
-                id = 0;
-                cID = 0;
-                txtName.Text = "";
-                txtPrice.Text = "";
-                cbCat.SelectedIndex = 0;
-                cbCat.SelectedIndex = -1;
-                txtImage.Image = RM.Properties.Resources.productPic;
-                txtName.Focus();
+                MessageBox.Show("Error: " + ex.Message);
             }
 
         }
 
-        private void forUpdateLoadData()
-        {
-            string qry = @"Select * from products where pid = " + id + "";
-            SqlCommand cdm = new SqlCommand(qry, MainClass.con);
-            SqlDataAdapter da = new SqlDataAdapter(cdm);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-
-            if (dt.Rows.Count > 0)
-            {
-                txtName.Text = dt.Rows[0]["pName"].ToString();
-                txtPrice.Text = dt.Rows[0]["Price"].ToString();
-
-                Byte[] imageArray = (byte[])(dt.Rows[0]["pImage"]);
-                byte[] imageByteArray = imageArray;
-                txtImage.Image = Image.FromStream(new MemoryStream(imageArray));
-            }
-        }
 
 
     }

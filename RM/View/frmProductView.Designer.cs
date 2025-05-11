@@ -41,6 +41,7 @@
             this.dgvcat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvedit = new System.Windows.Forms.DataGridViewImageColumn();
             this.dgvdel = new System.Windows.Forms.DataGridViewImageColumn();
+            //this.crystalOpenFileDialog1 = new CrystalDecisions.Shared.Interop.CrystalOpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.guna2DataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -123,6 +124,7 @@
             this.guna2DataGridView1.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.guna2DataGridView1.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
             this.guna2DataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.guna2DataGridView1_CellClick);
+            this.guna2DataGridView1.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.guna2DataGridView1_CellFormatting);
             // 
             // dgvSno
             // 
@@ -136,6 +138,7 @@
             // 
             // dgvid
             // 
+            this.dgvid.DataPropertyName = "pId";
             this.dgvid.HeaderText = "id";
             this.dgvid.MinimumWidth = 6;
             this.dgvid.Name = "dgvid";
@@ -144,6 +147,7 @@
             // 
             // dgvName
             // 
+            this.dgvName.DataPropertyName = "pName";
             this.dgvName.HeaderText = "Name";
             this.dgvName.MinimumWidth = 6;
             this.dgvName.Name = "dgvName";
@@ -151,6 +155,7 @@
             // 
             // dgvPrice
             // 
+            this.dgvPrice.DataPropertyName = "pPrice";
             this.dgvPrice.HeaderText = "Price";
             this.dgvPrice.MinimumWidth = 6;
             this.dgvPrice.Name = "dgvPrice";
@@ -158,18 +163,20 @@
             // 
             // dgvcatID
             // 
+            this.dgvcatID.DataPropertyName = "categoryID";
             this.dgvcatID.HeaderText = "cID";
             this.dgvcatID.MinimumWidth = 6;
             this.dgvcatID.Name = "dgvcatID";
             this.dgvcatID.ReadOnly = true;
-            this.dgvcatID.Visible = false;
             // 
             // dgvcat
             // 
-            this.dgvcat.HeaderText = "Category";
+            this.dgvcat.DataPropertyName = "pImage";
+            this.dgvcat.HeaderText = "Image";
             this.dgvcat.MinimumWidth = 6;
             this.dgvcat.Name = "dgvcat";
             this.dgvcat.ReadOnly = true;
+            this.dgvcat.Visible = false;
             // 
             // dgvedit
             // 
@@ -194,6 +201,10 @@
             this.dgvdel.Name = "dgvdel";
             this.dgvdel.ReadOnly = true;
             this.dgvdel.Width = 50;
+            // 
+            // crystalOpenFileDialog1
+            // 
+            //this.crystalOpenFileDialog1.FileName = "crystalOpenFileDialog1";
             // 
             // frmProductView
             // 
@@ -224,5 +235,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcat;
         private System.Windows.Forms.DataGridViewImageColumn dgvedit;
         private System.Windows.Forms.DataGridViewImageColumn dgvdel;
+        private CrystalDecisions.Shared.Interop.CrystalOpenFileDialog crystalOpenFileDialog1;
     }
 }

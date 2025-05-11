@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bussiness_Layer;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,14 +8,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Transfer_Object;
 
 namespace RM.Model
 {
     public partial class frmAddCusTomer : Form
     {
+        private StaffBL staffBL;
         public frmAddCusTomer()
         {
             InitializeComponent();
+            staffBL = new StaffBL();
         }
 
         public string OrderType = "";
@@ -29,9 +33,11 @@ namespace RM.Model
                 lblDriver.Visible = false;
                 cbDriver.Visible = false;
             }
-
-            string qry = "Select staffID 'id', sName 'name' from staff Where sRole = 'Driver' ";
-            MainClass.CBFILL(qry, cbDriver);
+            List<Staff>staff=new List<Staff>();
+            staff = staffBL.GetDriver();
+            cbDriver.DataSource = staff;
+            cbDriver.DisplayMember = "sName"; // Hiển thị tên nhân viên trong ComboBox
+            cbDriver.ValueMember = "staffId"; // Lưu giá trị staffId khi chọn
 
             if (mainID >0)
             {
@@ -39,9 +45,18 @@ namespace RM.Model
             }
         }
 
+        // Khi ComboBox thay đổi lựa chọn
         private void cbDriver_SelectedIndexChanged(object sender, EventArgs e)
         {
-            driverID = Convert.ToInt32(cbDriver.SelectedValue);
+            if (cbDriver.SelectedItem != null)
+            {
+                // Chuyển đối tượng Staff từ SelectedItem
+                Transfer_Object.Staff selectedStaff = (Transfer_Object.Staff)cbDriver.SelectedItem;
+
+                // Lấy staffId từ đối tượng Staff
+                driverID = Convert.ToInt32(selectedStaff.staffId);
+            }
         }
+
     }
 }

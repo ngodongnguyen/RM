@@ -128,6 +128,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "SampleView";
             this.Text = "SampleView";
+            this.Load += new System.EventHandler(this.SampleView_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

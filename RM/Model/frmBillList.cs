@@ -1,22 +1,28 @@
-﻿using System;
+﻿using Bussiness_Layer;
+using RM.Reports;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Transfer_Object;
 
 namespace RM.Model
 {
     public partial class frmBillList : SampleAdd
     {
+        private tblMainBL tblMainBL;
         public frmBillList()
         {
             InitializeComponent();
             LoadImage();
+            tblMainBL = new tblMainBL();
         }
 
         public int MainID = 0;
@@ -34,27 +40,88 @@ namespace RM.Model
 
         private void LoadData()
         {
-            string qry = "select MainID, TableName, WaiterName, orderType, status, total from tblMain where status <> 'Pending' ";
-            ListBox lb = new ListBox();
-            lb.Items.Add(dgvid);
-            lb.Items.Add(dgvTable);
-            lb.Items.Add(dgvWaiter);
-            lb.Items.Add(dgvType);
-            lb.Items.Add(dgvTotal);
+            var bills = tblMainBL.GetBillPending();
+            guna2DataGridView1.DataSource = bills;
 
-            MainClass.LoadData(qry, guna2DataGridView1, lb);
+            // Đảm bảo DataGridView được điền đầy đủ dữ liệu
+            guna2DataGridView1.Refresh();
+
+            // Lặp qua từng cột và ẩn cột không có dữ liệu
+            HideEmptyColumns();
+
+
         }
+
+
+        private void HideEmptyColumns()
+        {
+            foreach (DataGridViewColumn column in guna2DataGridView1.Columns)
+            {
+                bool isEmpty = true;
+
+                foreach (DataGridViewRow row in guna2DataGridView1.Rows)
+                {
+                    var cellValue = row.Cells[column.Name].Value;
+
+                    if (cellValue != null)
+                    {
+                        // Kiểm tra giá trị số bằng 0
+                        if (column.ValueType == typeof(int) || column.ValueType == typeof(float) || column.ValueType == typeof(double))
+                        {
+                            if (Convert.ToDouble(cellValue) != 0)
+                            {
+                                isEmpty = false;
+                                break;
+                            }
+                        }
+                        // Kiểm tra giá trị ngày không có dữ liệu
+                        else if (column.ValueType == typeof(DateTime))
+                        {
+                            if (DateTime.TryParse(cellValue.ToString(), out DateTime dateValue))
+                            {
+                                if (dateValue != DateTime.MinValue) // Ngày hợp lệ khác DateTime.MinValue
+                                {
+                                    isEmpty = false;
+                                    break;
+                                }
+                            }
+                        }
+                        // Kiểm tra giá trị string không rỗng
+                        else if (!string.IsNullOrEmpty(cellValue.ToString()))
+                        {
+                            isEmpty = false;
+                            break;
+                        }
+                    }
+                }
+
+                // Ẩn cột nếu tất cả các giá trị là null, rỗng, 0, hoặc ngày không có giá trị
+                if (isEmpty)
+                {
+                    column.Visible = false;
+                }
+                else
+                {
+                    column.Visible = true;
+                }
+            }
+        }
+
 
         private void guna2DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            // for searil no
-            int count = 0;
-
-            foreach (DataGridViewRow row in guna2DataGridView1.Rows)
+            if (e.RowIndex >= 0 && guna2DataGridView1.Columns[e.ColumnIndex].Name == "dgvSno")
             {
-                count++;
-                row.Cells[0].Value = count;
+                e.Value = e.RowIndex + 1; // Gán số thứ tự từ 1 đến n
             }
+            // for searil no
+            //int count = 0;
+
+            //foreach (DataGridViewRow row in guna2DataGridView1.Rows)
+            //{
+            //    count++;
+            //    row.Cells[0].Value = count;
+            //}
         }
 
         private void guna2DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -68,9 +135,25 @@ namespace RM.Model
                
             }
 
-            if (guna2DataGridView1.CurrentCell.OwningColumn.Name == "dgvedel")
+            if (guna2DataGridView1.CurrentCell.OwningColumn.Name == "dgvdel")
             {
-                //print bill
+                MainID = Convert.ToInt32(guna2DataGridView1.CurrentRow.Cells["dgvid"].Value);
+                string qry = "Select * from tblMain m inner join tblDetails d on d.MainID = m.MainID inner join products p on p.pID = d.proID Where m.MainID = " + MainID + " ";
+
+                SqlCommand cmd = new SqlCommand(qry, MainClass.con);
+                MainClass.con.Open();
+                DataTable dt = new DataTable();
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                MainClass.con.Close();
+                frmPrint frm = new frmPrint();
+                rptBill cr = new rptBill();
+
+                cr.SetDatabaseLogon("sa", "Ngodongnguyen2004"); // Đây là tài khoản Windows của bạn, không cần mật khẩu nếu bạn không yêu cầu mật khẩu
+                cr.SetDataSource(dt);
+                frm.crystalReportViewer1.ReportSource = cr;
+                frm.crystalReportViewer1.Refresh();
+                frm.Show();
             }
         }
     }

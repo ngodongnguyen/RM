@@ -10,43 +10,52 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
+using Transfer_Object;
+using Bussiness_Layer;
 namespace RM.Model
 {
     public partial class frmCategoryAdd : SampleAdd
     {
+        private CategoryBL categoryBL;
         public frmCategoryAdd()
         {
             InitializeComponent();
+            categoryBL = new CategoryBL();
 
         }
 
         public int id = 0;
+
         public override void btnSave_Click(object sender, EventArgs e)
         {
-
-            string qry = "";
-            if (id == 0) //insert
+            try
             {
-                qry = "Insert into category values(@Name)";
+                string name = txtName.Text;  
+                int categoryId = id;  
+
+                Category category = new Category(name);  
+                category.Id = categoryId.ToString();  
+
+                // Kiểm tra xem Id có giá trị hay không để quyết định Add hoặc Update
+                if (id == 0)  
+                {
+                    categoryBL.Add(category); 
+                    guna2MessageDialog1.Show("Saved successfully");
+                }
+                else  // Nếu là cập nhật (Id khác 0)
+                {
+                    id = 0;
+                    categoryBL.Update(category);  // Cập nhật đối tượng vào database
+                    guna2MessageDialog1.Show("Updated successfully");
+                }
             }
-            else //update
+            catch (Exception ex)
             {
-                qry = "Update category Set catName = @Name where catID= @id";
-
-
+                // Nếu có lỗi, hiển thị thông báo lỗi
+                guna2MessageDialog1.Show("Error: " + ex.Message);
             }
-            Hashtable ht = new Hashtable();
-            ht.Add("@id", id);
-            ht.Add("@Name", txtName.Text);
-            if (MainClass.SQl(qry, ht) > 0)
-            {
-                guna2MessageDialog1.Show("Saved successfully");
-                id = 0;
-                //txtName.Text = "";
-                txtName.Focus();
-            }
-
         }
+
 
         private void frmCategoryAdd_Load(object sender, EventArgs e)
         {

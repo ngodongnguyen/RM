@@ -82,5 +82,34 @@ namespace RM
         {
             AddControls(new frmKitchenView());
         }
+
+        private void btnSetting_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnReport_Click(object sender, EventArgs e)
+        {
+            AddControls(new frmReports());
+
+        }
+
+        private void btnChart_Click(object sender, EventArgs e)
+        {
+            AddControls(new btnTotalRevenue());
+
+        }
+
+        private void guna2Button1_Click(object sender, EventArgs e)
+        {
+            AddControls(new frmPromotion());
+
+        }
+
+        private void btnSendBill_Click(object sender, EventArgs e)
+        {
+            AddControls(new frmEmail());
+
+        }
     }
 }
