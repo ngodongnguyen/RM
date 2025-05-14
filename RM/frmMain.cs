@@ -75,7 +75,6 @@ namespace RM
                 btnReport.Visible = false;
                 btnChart.Visible = false;
                 btnPromotion.Visible = false;
-
             }
             else if (role == "Driver")
             {

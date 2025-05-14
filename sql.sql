@@ -6,8 +6,7 @@ create table users(
 userID int primary key identity,
 username nvarchar(100),
 upass nvarchar(100),
-uName nvarchar(100),
-uphone nvarchar(100)
+staffID int
 )
 create table tables(
 tid int primary key identity,
@@ -69,13 +68,13 @@ discount_value int,
 status nvarchar(100)
 )
 -- Thêm 5 ngu?i dùng vào b?ng users
-INSERT INTO users (username, upass, uName, uphone) VALUES
-('user1', 'pass1', 'Nguyen Van A', '0901234567'),
-('user2', 'pass2', 'Tran Thi B', '0909876543'),
-('user3', 'pass3', 'Le Hoang C', '0911223344'),
-('user4', 'pass4', 'Pham Thu D', '0988776655'),
-('user5', 'pass5', 'Vu Duc E', '0933445566'),
-('admin','123','Ngo Dong Nguyen','0383377696');
+INSERT INTO users (username, upass,staff_id) VALUES
+('user1', 'pass1', 3),
+('user2', 'pass2', 7),
+('user3', 'pass3', 13),
+('user4', 'pass4', 19),
+('user5', 'pass5', 29),
+('admin','123',20);
 -- Thêm 10 bàn vào b?ng tables
 INSERT INTO tables (tname) VALUES
 ('Table 1'), ('Table 2'), ('Table 3'), ('Table 4'), ('Table 5'),
