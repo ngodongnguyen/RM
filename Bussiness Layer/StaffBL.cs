@@ -1,5 +1,6 @@
 ﻿using DataLayer;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -43,6 +44,17 @@ namespace Bussiness_Layer
             try
             {
                 return staffDL.Update(staff);
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+        }
+        public string GetRole(string name)
+        {
+            try
+            {
+                return staffDL.GetRole(name);
             }
             catch (SqlException ex)
             {

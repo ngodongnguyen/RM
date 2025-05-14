@@ -34,6 +34,15 @@ namespace RM.Model
             categoryBL = new CategoryBL();
             tblMainBL = new tblMainBL();
             tblDetailsBL = new tblDetailsBL();
+            DataGridViewButtonColumn deleteButtonColumn = new DataGridViewButtonColumn();
+            deleteButtonColumn.Name = "dgvDelete";
+            deleteButtonColumn.HeaderText = "Delete";
+            deleteButtonColumn.Text = "Delete";
+            deleteButtonColumn.UseColumnTextForButtonValue = true;
+            guna2DataGridView1.Columns.Add(deleteButtonColumn);
+
+            // Đăng ký sự kiện CellClick cho DataGridView
+            guna2DataGridView1.CellClick += guna2DataGridView1_CellClick;
         }
 
         public int MainID = 0;
@@ -510,6 +519,28 @@ namespace RM.Model
             lblTable.Visible = false;
             lblTotal.Text = "00";
 
+        }
+
+        private void guna2DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == guna2DataGridView1.Columns["dgvDelete"].Index && e.RowIndex >= 0 && e.RowIndex < guna2DataGridView1.Rows.Count)
+            {
+                DataGridViewRow selectedRow = guna2DataGridView1.Rows[e.RowIndex];
+
+                if (MessageBox.Show("Confirm delete", "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    guna2DataGridView1.Rows.Remove(selectedRow);
+
+                    int count = 0;
+                    foreach (DataGridViewRow row in guna2DataGridView1.Rows)
+                    {
+                        count++;
+                        row.Cells[0].Value = count;
+                    }
+
+                    GetTotal();
+                }
+            }
         }
 
         private void btnHold_Click(object sender, EventArgs e)

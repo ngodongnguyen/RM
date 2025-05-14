@@ -30,7 +30,7 @@ namespace RM.Model
         public int MainID = 0;
         private void LoadImage()
         {
-            guna2PictureBox1.Image = Properties.Resources.productPic;
+            guna2PictureBox1.Image = Properties.Resources.gmail;
             guna2PictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
         }
@@ -42,7 +42,7 @@ namespace RM.Model
 
         private void LoadData()
         {
-            var bills = tblMainBL.GetBillPending();
+            var bills = tblMainBL.GetBillComplete();
             guna2DataGridView1.DataSource = bills;
 
             // Đảm bảo DataGridView được điền đầy đủ dữ liệu

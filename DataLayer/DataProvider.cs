@@ -45,13 +45,20 @@ namespace DataLayer
                 throw ex;
             }
         }
-        public object MyExecuteScalar(string sql, CommandType type)
+        public object MyExecuteScalar(string sql, CommandType type, List<SqlParameter> parameters = null)
         {
             try
             {
                 Connect();
                 SqlCommand cmd = new SqlCommand(sql, cn);
                 cmd.CommandType = type;
+                if (parameters != null)
+                {
+                    foreach (var parameter in parameters)
+                    {
+                        cmd.Parameters.Add(parameter);
+                    }
+                }
                 return (cmd.ExecuteScalar());
             }
             catch (SqlException ex)

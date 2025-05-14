@@ -24,7 +24,7 @@ namespace RM.Visualize
         }
         private void LoadLineChart()
         {
-            List<tblMain>tblMains = tblMainBL.GetAmountOfOrder();
+            List<tblMain> tblMains = tblMainBL.GetAmountOfOrder();
             Chart chart = new Chart();
             chart.Dock = DockStyle.Fill;  // Đặt biểu đồ chiếm toàn bộ Form
             this.Controls.Add(chart);
@@ -42,10 +42,17 @@ namespace RM.Visualize
                 IsValueShownAsLabel = true,  // Hiển thị giá trị trên đường
                 LabelFormat = "#0.##",  // Hiển thị giá trị của điểm dữ liệu
             };
+
             foreach (var main in tblMains)
             {
-                series.Points.AddXY(main.aDate.ToString("yyyy-MM-dd"), main.MainID); // X: Ngày, Y: Doanh thu
+                // Sử dụng trực tiếp đối tượng DateTime cho trục X
+                DateTime monthYear = main.aDate;
+                double revenue = main.MainID;  // Giả sử MainID là tổng doanh thu
+
+                // Thêm giá trị vào series
+                series.Points.AddXY(monthYear, revenue);
             }
+
             chart.Series.Add(series);
 
             // Thêm tiêu đề cho biểu đồ
@@ -54,9 +61,9 @@ namespace RM.Visualize
             // Cấu hình Legend (Chú thích)
             chart.Legends.Add(new Legend() { Docking = Docking.Top });
 
-            // Cấu hình trục X (Ngày tháng)
-            chartArea.AxisX.LabelStyle.Format = "MM/dd/yyyy"; // Hiển thị ngày theo định dạng MM/dd/yyyy
+            // Cấu hình trục X (Tháng)
+            chartArea.AxisX.LabelStyle.Format = "MMM-yyyy"; // Hiển thị tháng và năm
             chartArea.AxisX.IntervalType = DateTimeIntervalType.Months; // Tạo khoảng cách mỗi tháng
         }
     }
-}
+    }

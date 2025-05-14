@@ -74,7 +74,7 @@
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.label2);
             this.Name = "frmCategoryAdd";
-            this.Text = "frmCategoryAdd";
+            this.Text = "0";
             this.Load += new System.EventHandler(this.frmCategoryAdd_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

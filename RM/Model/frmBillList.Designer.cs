@@ -166,7 +166,7 @@
             // 
             // dgvType
             // 
-            this.dgvType.DataPropertyName = "orderType";
+            this.dgvType.DataPropertyName = "OrderType";
             this.dgvType.HeaderText = "Order Type";
             this.dgvType.MinimumWidth = 6;
             this.dgvType.Name = "dgvType";
@@ -174,7 +174,7 @@
             // 
             // dgvStatus
             // 
-            this.dgvStatus.DataPropertyName = "status";
+            this.dgvStatus.DataPropertyName = "Status";
             this.dgvStatus.HeaderText = "Status";
             this.dgvStatus.MinimumWidth = 6;
             this.dgvStatus.Name = "dgvStatus";
@@ -182,7 +182,7 @@
             // 
             // dgvTotal
             // 
-            this.dgvTotal.DataPropertyName = "total";
+            this.dgvTotal.DataPropertyName = "Total";
             this.dgvTotal.HeaderText = "Total";
             this.dgvTotal.MinimumWidth = 6;
             this.dgvTotal.Name = "dgvTotal";

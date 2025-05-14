@@ -1,4 +1,6 @@
-﻿using RM.Model;
+﻿using Bussiness_Layer;
+using Guna.UI2.WinForms;
+using RM.Model;
 using RM.View;
 using System;
 using System.Collections.Generic;
@@ -14,17 +16,32 @@ namespace RM
 {
     public partial class frmMain : Form
     {
-        public frmMain()
+        private string userName;
+        private string role;
+        private StaffBL staffBL; 
+        public frmMain(string userName)
         {
+            staffBL = new StaffBL();
             InitializeComponent();
+            this.userName = userName;
+            role = staffBL.GetRole(userName);
         }
         //for accessing frmMain
         static frmMain _obj;
         public static frmMain Instance
         {
-            get { if (_obj == null) { _obj = new frmMain(); } return _obj; }
+            get
+            {
+                if (_obj == null)
+                {
+                    // The following line will cause an issue with the constructor
+                    // because the Instance property doesn't know the userName.
+                    // _obj = new frmMain();
+                    // Consider a different approach for the Singleton if you need the userName.
+                }
+                return _obj;
+            }
         }
-
         //Method to add controls in Main form
         public void AddControls(Form f)
         {
@@ -44,6 +61,101 @@ namespace RM
         {
             lblUser.Text = MainClass.USER;
             _obj = this;
+            if (role == "Cashier")
+            {
+                btnTable.Visible = true;
+                btnPos.Visible = true;
+                btnKitchen.Visible = true;
+                btnSendBill.Visible = true;
+                btnHome.Visible = true;
+                btnCategory.Visible = false; // Thêm nếu cashier có quyền
+                btnProduct.Visible = false; // Thêm nếu cashier có quyền
+                btnStaff.Visible = false;   // Ẩn nếu cashier không có quyền
+                btnSetting.Visible = false;
+                btnReport.Visible = false;
+                btnChart.Visible = false;
+                btnPromotion.Visible = false;
+
+            }
+            else if (role == "Driver")
+            {
+                btnSendBill.Visible = true;
+                btnHome.Visible = true;
+                btnTable.Visible = false;
+                btnPos.Visible = false;
+                btnKitchen.Visible = false;
+                btnCategory.Visible = false;
+                btnProduct.Visible = false;
+                btnStaff.Visible = false;
+                btnSetting.Visible = false;
+                btnReport.Visible = false;
+                btnChart.Visible = false;
+                btnPromotion.Visible = false;
+            }
+            else if (role == "Waiter")
+            {
+                btnSendBill.Visible = true;
+                btnHome.Visible = true;
+                btnKitchen.Visible = true;
+                btnPos.Visible = true;
+                btnTable.Visible = true;
+                btnCategory.Visible = false;
+                btnProduct.Visible = false;
+                btnStaff.Visible = false;
+                btnSetting.Visible = false;
+                btnReport.Visible = false;
+                btnChart.Visible = false;
+                btnPromotion.Visible = false;
+
+            }
+            else if (role == "Manager")
+            {
+                // Hiển thị tất cả các nút
+                btnTable.Visible = true;
+                btnPos.Visible = true;
+                btnKitchen.Visible = true;
+                btnSendBill.Visible = true;
+                btnHome.Visible = true;
+                btnCategory.Visible = true;
+                btnProduct.Visible = true;
+                btnStaff.Visible = true;
+                btnSetting.Visible = true;
+                btnReport.Visible = true;
+                btnChart.Visible = true;
+                btnPromotion.Visible = true;
+
+            }
+            else if (role == "Cleaning" || role == "Other")
+            {
+                btnHome.Visible = true;
+                btnTable.Visible = false;
+                btnPos.Visible = false;
+                btnKitchen.Visible = false;
+                btnSendBill.Visible = false;
+                btnCategory.Visible = false;
+                btnProduct.Visible = false;
+                btnStaff.Visible = false;
+                btnSetting.Visible = false;
+                btnReport.Visible = false;
+                btnChart.Visible = false;
+                btnPromotion.Visible = false;
+
+            }
+            else
+            {
+                // Xử lý trường hợp vai trò không xác định, có thể ẩn tất cả hoặc hiển thị một số nút cơ bản
+                btnHome.Visible = true;
+                btnTable.Visible = false;
+                btnPos.Visible = false;
+                btnKitchen.Visible = false;
+                btnSendBill.Visible = false;
+                btnCategory.Visible = false;
+                btnProduct.Visible = false;
+                btnStaff.Visible = false;
+                btnSetting.Visible = false;
+                btnReport.Visible = false;
+                btnChart.Visible = false;
+            }
         }
 
         private void btnHome_Click(object sender, EventArgs e)
@@ -109,6 +221,12 @@ namespace RM
         private void btnSendBill_Click(object sender, EventArgs e)
         {
             AddControls(new frmEmail());
+
+        }
+
+        private void btnSetting_Click_1(object sender, EventArgs e)
+        {
+            AddControls(new frmSettings());
 
         }
     }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using Transfer_Object;
@@ -27,11 +28,22 @@ namespace Bussiness_Layer
                 throw ex;
             }
         }
-        public List<tblMain> GetTotal()
+        public List<tblMain> GetBillComplete()
         {
             try
             {
-                return tblMainDL.GetTotal();
+                return tblMainDL.GetBillComplete();
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+        }
+        public List<tblMain> GetTotal( DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                return tblMainDL.GetTotal(startDate, endDate);
             }
             catch (SqlException ex)
             {
@@ -43,6 +55,17 @@ namespace Bussiness_Layer
             try
             {
                 return tblMainDL.GetTables();
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+        }
+        public List<MDP> GetBillList(string id)
+        {
+            try
+            {
+                return tblMainDL.GetBillList(id);
             }
             catch (SqlException ex)
             {

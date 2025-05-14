@@ -1,12 +1,7 @@
 ﻿using Bussiness_Layer;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Transfer_Object;
@@ -16,36 +11,87 @@ namespace RM.Visualize
     public partial class frmFoodInTotal : Form
     {
         private tblDetailsBL tblDetailsBL;
+
+        // Khai báo biểu đồ
+        private Chart chart;
+
         public frmFoodInTotal()
         {
             tblDetailsBL = new tblDetailsBL();
             InitializeComponent();
-            LoadPieChart();
+            InitializeComboBox(); // Gọi hàm này để khởi tạo và hiển thị ComboBox
+            InitializeChart(); // Khởi tạo chart một lần duy nhất
+            LoadPieChart("Appetizers"); // Hiển thị chart với dữ liệu mặc định (ví dụ "Appetizers")
         }
-        private void LoadPieChart()
+
+        // Khởi tạo ComboBox cho các danh mục
+        private void InitializeComboBox()
         {
-            // Dữ liệu mẫu về các sản phẩm và phần trăm doanh thu của chúng
-            List<ProductRevenue> productRevenues = tblDetailsBL.GetProductRevenues();
-            double total=0;
-            foreach (var product in productRevenues)
+            // Tạo ComboBox
+            ComboBox categoryComboBox = new ComboBox();
+            categoryComboBox.Items.Add("Appetizers");
+            categoryComboBox.Items.Add("Main Course");
+            categoryComboBox.Items.Add("Dessert");
+            categoryComboBox.Items.Add("Drink");
+            categoryComboBox.Items.Add("Special Dish");
+
+            // Đặt vị trí ComboBox trên form
+            categoryComboBox.Location = new System.Drawing.Point(20, 20);
+            categoryComboBox.SelectedIndexChanged += new EventHandler(CategoryComboBox_SelectedIndexChanged);
+            // Thêm ComboBox vào form
+            this.Controls.Add(categoryComboBox);
+
+        }
+
+        // Xử lý sự kiện khi người dùng chọn một danh mục từ ComboBox
+        private void CategoryComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            if (comboBox != null)
             {
-                total += product.TotalRevenue;
+                // Gọi LoadPieChart với tên danh mục được chọn
+                LoadPieChart(comboBox.SelectedItem.ToString());
             }
-            // Chuyển đổi giá trị thành đơn vị trăm và tính tỷ lệ phần trăm cho từng phần
-            foreach (var product in productRevenues)
-            {
-                product.TotalRevenue = (product.TotalRevenue / total); // Tính phần trăm
-            }
-            // Tạo đối tượng Chart
-            Chart chart = new Chart();
+        }
+
+        // Khởi tạo chart một lần duy nhất
+        private void InitializeChart()
+        {
+            chart = new Chart();
             chart.Dock = DockStyle.Fill;
             this.Controls.Add(chart);
 
             // Cấu hình ChartArea
             ChartArea chartArea = new ChartArea();
             chart.ChartAreas.Add(chartArea);
+        }
 
-            // Tạo Series để vẽ biểu đồ tròn
+        // Cập nhật pie chart theo danh mục
+        private void LoadPieChart(string categoryName)
+        {
+            // Lấy dữ liệu sản phẩm theo danh mục từ tblDetailsBL
+            List<ProductRevenue> productRevenues = tblDetailsBL.GetProductRevenues(categoryName);
+
+            if (productRevenues == null || productRevenues.Count == 0)
+            {
+                MessageBox.Show("No data found for the selected category.");
+                return;
+            }
+
+            // Tính tổng doanh thu
+            double total = productRevenues.Sum(p => p.TotalRevenue);
+
+            // Tính phần trăm cho mỗi sản phẩm
+            foreach (var product in productRevenues)
+            {
+                product.TotalRevenue = (product.TotalRevenue / total); // Tính phần trăm
+            }
+
+            // Xóa Series cũ nếu có
+            chart.Series.Clear();
+            chart.Legends.Clear();
+
+            // Tạo Series mới cho biểu đồ tròn
             Series series = new Series
             {
                 Name = "Sales",
@@ -65,13 +111,15 @@ namespace RM.Visualize
             chart.Series.Add(series);
             chart.Legends.Add(new Legend() { Docking = Docking.Top });
 
+            // Đặt màu sắc cho từng phần của biểu đồ
             var colors = new List<System.Drawing.Color>
-    {
-        System.Drawing.Color.Orange,  // Màu cho "Food in total"
-        System.Drawing.Color.Blue,    // Màu cho "Amount of order"
-        System.Drawing.Color.Green,   // Màu cho "Additional Item"
-        System.Drawing.Color.Red      // Màu cho "Discount"
-    };
+            {
+                System.Drawing.Color.Orange,
+                System.Drawing.Color.Blue,
+                System.Drawing.Color.Green,
+                System.Drawing.Color.Red,
+                System.Drawing.Color.Purple
+            };
 
             // Gán màu cho từng phần của biểu đồ
             for (int i = 0; i < series.Points.Count; i++)
@@ -80,8 +128,8 @@ namespace RM.Visualize
             }
 
             // Hiển thị tiêu đề cho biểu đồ
-            chart.Titles.Add("Total Revenue Breakdown");
+            chart.Titles.Clear(); // Xóa tiêu đề cũ
+            chart.Titles.Add("Total Revenue Breakdown for " + categoryName);
         }
-
     }
-    }
+}

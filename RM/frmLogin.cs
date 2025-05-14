@@ -49,7 +49,7 @@ namespace RM
             if (UserLogin(account)==true)
             {
                 this.Hide();
-                frmMain frm = new frmMain();
+                frmMain frm = new frmMain(user);
                 frm.Show();
                 
             }

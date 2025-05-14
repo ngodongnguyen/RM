@@ -38,11 +38,11 @@ namespace Bussiness_Layer
                 throw ex;
             }
         }
-        public List<ProductRevenue> GetProductRevenues()
+        public List<ProductRevenue> GetProductRevenues(string categoryName)
         {
             try
             {
-                return tblDetailsDL.GetProductRevenues();
+                return tblDetailsDL.GetProductRevenues(categoryName);
             }
             catch (SqlException ex)
             {

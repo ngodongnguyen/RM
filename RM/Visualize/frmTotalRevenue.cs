@@ -16,17 +16,21 @@ namespace RM.Visualize
     public partial class frmTotalRevenue : Form
     {
         private tblMainBL tblMainBL;
-        public frmTotalRevenue()
+        private DateTime startDate;
+        private DateTime endDate;
+        public frmTotalRevenue(DateTime sDate, DateTime eDate)
         {
             tblMainBL = new tblMainBL();
 
             InitializeComponent();
+            startDate = sDate;
+            endDate = eDate;
             LoadAndDisplayChart();
         }
         private void LoadAndDisplayChart()
         {
             // Gọi phương thức LoadEntries để lấy dữ liệu
-            List<tblMain> dateAmountList = tblMainBL.GetTotal();
+            List<tblMain> dateAmountList = tblMainBL.GetTotal(startDate, endDate);
 
             // Tạo một đối tượng Chart
             Chart chart = new Chart();

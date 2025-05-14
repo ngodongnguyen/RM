@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
+            this.btnSendBill = new Guna.UI2.WinForms.Guna2Button();
             this.btnPromotion = new Guna.UI2.WinForms.Guna2Button();
             this.btnChart = new Guna.UI2.WinForms.Guna2Button();
             this.btnReport = new Guna.UI2.WinForms.Guna2Button();
@@ -49,7 +50,6 @@
             this.guna2ControlBox2 = new Guna.UI2.WinForms.Guna2ControlBox();
             this.btnExit = new Guna.UI2.WinForms.Guna2ControlBox();
             this.CenterPanel = new Guna.UI2.WinForms.Guna2Panel();
-            this.btnSendBill = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.guna2PictureBox1)).BeginInit();
             this.guna2Panel2.SuspendLayout();
@@ -75,8 +75,35 @@
             this.guna2Panel1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(55)))), ((int)(((byte)(89)))));
             this.guna2Panel1.Location = new System.Drawing.Point(0, 0);
             this.guna2Panel1.Name = "guna2Panel1";
-            this.guna2Panel1.Size = new System.Drawing.Size(278, 1102);
+            this.guna2Panel1.Size = new System.Drawing.Size(278, 1055);
             this.guna2Panel1.TabIndex = 0;
+            // 
+            // btnSendBill
+            // 
+            this.btnSendBill.AutoRoundedCorners = true;
+            this.btnSendBill.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(55)))), ((int)(((byte)(89)))));
+            this.btnSendBill.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
+            this.btnSendBill.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(85)))), ((int)(((byte)(126)))));
+            this.btnSendBill.CustomizableEdges.BottomRight = false;
+            this.btnSendBill.CustomizableEdges.TopRight = false;
+            this.btnSendBill.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnSendBill.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnSendBill.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnSendBill.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnSendBill.FillColor = System.Drawing.Color.Transparent;
+            this.btnSendBill.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSendBill.ForeColor = System.Drawing.Color.White;
+            this.btnSendBill.Image = ((System.Drawing.Image)(resources.GetObject("btnSendBill.Image")));
+            this.btnSendBill.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnSendBill.ImageOffset = new System.Drawing.Point(10, 0);
+            this.btnSendBill.Location = new System.Drawing.Point(45, 854);
+            this.btnSendBill.Name = "btnSendBill";
+            this.btnSendBill.Size = new System.Drawing.Size(233, 55);
+            this.btnSendBill.TabIndex = 6;
+            this.btnSendBill.Text = "Send Bill";
+            this.btnSendBill.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btnSendBill.TextOffset = new System.Drawing.Point(30, 0);
+            this.btnSendBill.Click += new System.EventHandler(this.btnSendBill_Click);
             // 
             // btnPromotion
             // 
@@ -96,7 +123,7 @@
             this.btnPromotion.Image = ((System.Drawing.Image)(resources.GetObject("btnPromotion.Image")));
             this.btnPromotion.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnPromotion.ImageOffset = new System.Drawing.Point(10, 0);
-            this.btnPromotion.Location = new System.Drawing.Point(45, 698);
+            this.btnPromotion.Location = new System.Drawing.Point(45, 720);
             this.btnPromotion.Name = "btnPromotion";
             this.btnPromotion.Size = new System.Drawing.Size(233, 55);
             this.btnPromotion.TabIndex = 5;
@@ -123,7 +150,7 @@
             this.btnChart.Image = ((System.Drawing.Image)(resources.GetObject("btnChart.Image")));
             this.btnChart.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnChart.ImageOffset = new System.Drawing.Point(10, 0);
-            this.btnChart.Location = new System.Drawing.Point(39, 759);
+            this.btnChart.Location = new System.Drawing.Point(45, 781);
             this.btnChart.Name = "btnChart";
             this.btnChart.Size = new System.Drawing.Size(233, 55);
             this.btnChart.TabIndex = 4;
@@ -177,13 +204,14 @@
             this.btnSetting.Image = ((System.Drawing.Image)(resources.GetObject("btnSetting.Image")));
             this.btnSetting.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnSetting.ImageOffset = new System.Drawing.Point(10, 0);
-            this.btnSetting.Location = new System.Drawing.Point(39, 870);
+            this.btnSetting.Location = new System.Drawing.Point(45, 915);
             this.btnSetting.Name = "btnSetting";
             this.btnSetting.Size = new System.Drawing.Size(233, 55);
             this.btnSetting.TabIndex = 2;
             this.btnSetting.Text = "Setting";
             this.btnSetting.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.btnSetting.TextOffset = new System.Drawing.Point(30, 0);
+            this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click_1);
             // 
             // btnKitchen
             // 
@@ -462,42 +490,15 @@
             this.CenterPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CenterPanel.Location = new System.Drawing.Point(278, 75);
             this.CenterPanel.Name = "CenterPanel";
-            this.CenterPanel.Size = new System.Drawing.Size(804, 1027);
+            this.CenterPanel.Size = new System.Drawing.Size(804, 980);
             this.CenterPanel.TabIndex = 0;
-            // 
-            // btnSendBill
-            // 
-            this.btnSendBill.AutoRoundedCorners = true;
-            this.btnSendBill.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(55)))), ((int)(((byte)(89)))));
-            this.btnSendBill.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            this.btnSendBill.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(85)))), ((int)(((byte)(126)))));
-            this.btnSendBill.CustomizableEdges.BottomRight = false;
-            this.btnSendBill.CustomizableEdges.TopRight = false;
-            this.btnSendBill.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnSendBill.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnSendBill.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnSendBill.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnSendBill.FillColor = System.Drawing.Color.Transparent;
-            this.btnSendBill.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSendBill.ForeColor = System.Drawing.Color.White;
-            this.btnSendBill.Image = ((System.Drawing.Image)(resources.GetObject("btnSendBill.Image")));
-            this.btnSendBill.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnSendBill.ImageOffset = new System.Drawing.Point(10, 0);
-            this.btnSendBill.Location = new System.Drawing.Point(45, 820);
-            this.btnSendBill.Name = "btnSendBill";
-            this.btnSendBill.Size = new System.Drawing.Size(233, 55);
-            this.btnSendBill.TabIndex = 6;
-            this.btnSendBill.Text = "Send Bill";
-            this.btnSendBill.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.btnSendBill.TextOffset = new System.Drawing.Point(30, 0);
-            this.btnSendBill.Click += new System.EventHandler(this.btnSendBill_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1082, 1102);
+            this.ClientSize = new System.Drawing.Size(1082, 1055);
             this.Controls.Add(this.CenterPanel);
             this.Controls.Add(this.guna2Panel2);
             this.Controls.Add(this.guna2Panel1);

@@ -27,19 +27,40 @@ namespace RM.View
         {
             GetData();
         }
+
         public void GetData()
         {
             try
             {
+                // Nạp dữ liệu vào DataGridView
                 guna2DataGridView1.DataSource = staffBL.GetStaff();
 
+
+                // Kiểm tra cột "Role" có tồn tại trong DataGridView
+                if (guna2DataGridView1.Columns.Contains("dgvrole"))
+                {
+                    // Tìm chỉ mục của cột "Role"
+                    int roleColumnIndex = guna2DataGridView1.Columns["dgvrole"].Index;
+                    guna2DataGridView1.Columns["dgvrole"].DisplayIndex = roleColumnIndex - 2;
+                    // Di chuyển "dgvedit" và "dgvdel" vào sau cột "Role"
+                    guna2DataGridView1.Columns["dgvedit"].DisplayIndex = roleColumnIndex;
+                    guna2DataGridView1.Columns["dgvdel"].DisplayIndex = roleColumnIndex +1;
+                }
+                else
+                {
+                    MessageBox.Show("Cột 'sRole' không tồn tại trong DataGridView.");
+                }
+                guna2DataGridView1.Refresh();
+
+                // Đảm bảo DataGridView được điền đầy đủ dữ liệu
             }
             catch (SqlException ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
 
-        } 
+
         public override void btnAdd_Click(object sender, EventArgs e)
         {
             MainClass.BlurBackground(new Model.frmStaffAdd());

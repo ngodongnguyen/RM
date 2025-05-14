@@ -36,20 +36,36 @@ namespace RM.Model
         private void frmBillList_Load(object sender, EventArgs e)
         {
             LoadData();
+
         }
 
         private void LoadData()
         {
+            // Ẩn các cột nút khi tải dữ liệu
+            //guna2DataGridView1.Columns["dgvedit"].Visible = false;
+            //guna2DataGridView1.Columns["dgvdel"].Visible = false;
+
             var bills = tblMainBL.GetBillPending();
             guna2DataGridView1.DataSource = bills;
 
+            // Ẩn các cột không cần thiết
+            guna2DataGridView1.Columns["aDate"].Visible = false;
+            guna2DataGridView1.Columns["tTime"].Visible = false;
+            guna2DataGridView1.Columns["received"].Visible = false;
+            guna2DataGridView1.Columns["Change"].Visible = false;
+            guna2DataGridView1.Columns["aTime"].Visible = false;
+            guna2DataGridView1.Columns["CustName"].Visible = false;
+            guna2DataGridView1.Columns["DriverID"].Visible = false;
+            guna2DataGridView1.Columns["CustPhone"].Visible = false;
+            guna2DataGridView1.Columns["Month"].Visible = false;
+
+
+            // Di chuyển cột "dgvedit" và "dgvdel" vào cuối DataGridView
+            guna2DataGridView1.Columns["dgvedit"].DisplayIndex = guna2DataGridView1.Columns.Count - 2;  // Di chuyển "dgvedit" vào vị trí cuối
+            guna2DataGridView1.Columns["dgvdel"].DisplayIndex = guna2DataGridView1.Columns.Count - 1;   // Di chuyển "dgvdel" vào vị trí cuối
+
             // Đảm bảo DataGridView được điền đầy đủ dữ liệu
             guna2DataGridView1.Refresh();
-
-            // Lặp qua từng cột và ẩn cột không có dữ liệu
-            HideEmptyColumns();
-
-
         }
 
 
@@ -86,7 +102,7 @@ namespace RM.Model
                                 }
                             }
                         }
-                        // Kiểm tra giá trị string không rỗng
+                        //Kiểm tra giá trị string không rỗng
                         else if (!string.IsNullOrEmpty(cellValue.ToString()))
                         {
                             isEmpty = false;
@@ -146,11 +162,13 @@ namespace RM.Model
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 da.Fill(dt);
                 MainClass.con.Close();
-                frmPrint frm = new frmPrint();
                 rptBill cr = new rptBill();
+                frmPrint frm = new frmPrint();
 
                 cr.SetDatabaseLogon("sa", "Ngodongnguyen2004"); // Đây là tài khoản Windows của bạn, không cần mật khẩu nếu bạn không yêu cầu mật khẩu
                 cr.SetDataSource(dt);
+                //cr.SetParameterValue("MainID", tmp);
+
                 frm.crystalReportViewer1.ReportSource = cr;
                 frm.crystalReportViewer1.Refresh();
                 frm.Show();

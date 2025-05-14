@@ -24,7 +24,7 @@ namespace RM.View
 
         private void btnRevenue_Click(object sender, EventArgs e)
         {
-            frmTotalRevenue frm=new frmTotalRevenue();
+            frmChooseDate frm=new frmChooseDate();
             frm.StartPosition = FormStartPosition.CenterScreen;  // Đặt vị trí form ở giữa màn hình
             frm.Show();
         }

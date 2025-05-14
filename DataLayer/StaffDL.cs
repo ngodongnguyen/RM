@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfer_Object;
+using System.IO;
+using System.Security.Principal;
 
 namespace DataLayer
 {
@@ -49,6 +51,37 @@ namespace DataLayer
                 return MyExecuteNonQuery(sql, CommandType.Text);
             }
             catch (Exception ex) { throw ex; }
+        }
+        public string GetRole(string name)
+        {
+            string sql = "SELECT staff.sRole FROM staff " +
+                         "JOIN users u ON u.staff_id = staff.staffID " +
+                         "WHERE u.username = @username";
+            List<SqlParameter> parameters = new List<SqlParameter>
+    {
+        new SqlParameter("@username", SqlDbType.NVarChar, 50) { Value = name }
+    };
+
+            try
+            {
+                // Assuming you have a method like MyExecuteScalar that returns a single value
+                object result = MyExecuteScalar(sql, CommandType.Text, parameters);
+
+                // Check if the result is not null and convert it to a string
+                if (result != null && result != DBNull.Value)
+                {
+                    return result.ToString();
+                }
+                else
+                {
+                    // Handle the case where no role is found (e.g., return null or an empty string)
+                    return null; // Or return string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         public int Update(Staff staff)
         {

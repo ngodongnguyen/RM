@@ -47,6 +47,7 @@
     <Compile Include="Account.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="MDP.cs" />
     <Compile Include="MDPC.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="ProductRevenue.cs" />

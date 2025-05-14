@@ -40,7 +40,7 @@ namespace RM.Model
         {
             txtBillAmount.Text = amt.ToString();
             var promotions = promotionBL.GetPromotions();
-            var activePromotions = promotions.Where(p => p.status == "active").ToList();
+            var activePromotions = promotions.Where(p => p.status == "Active").ToList();
 
             // Thêm "None" vào đầu danh sách chương trình khuyến mãi
             activePromotions.Insert(0, new Promotion { promotionId = 0, promotionName = "None" });
@@ -77,6 +77,21 @@ namespace RM.Model
 
         public override void btnSave_Click(object sender, EventArgs e)
         {
+            double amt = 0;
+            double receipt = 0;
+
+            double.TryParse(txtBillAmount.Text, out amt);
+            double.TryParse(txtReceived.Text, out receipt);
+
+            // Kiểm tra nếu số tiền nhận được nhỏ hơn tổng tiền cần thanh toán
+            if (receipt < amt)
+            {
+                // Hiển thị thông báo khi số tiền nhận được không đủ
+                guna2MessageDialog1.Buttons = Guna.UI2.WinForms.MessageDialogButtons.OK;
+                guna2MessageDialog1.Show("The received amount is not enough to make payment. Please check again.");
+                return; // Dừng lại không thực hiện lưu nếu số tiền nhận được nhỏ hơn
+            }
+
             tblMain tbl = new tblMain();
             tbl.MainID = MainID;
             tbl.Received=Convert.ToSingle(txtReceived.Text);

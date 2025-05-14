@@ -30,17 +30,6 @@ namespace RM.Model
         public int cID = 0;
         private void frmProductAdd_Load(object sender, EventArgs e)
         {
-            //for cb fill
-            //string qry = "Select catID 'id', catName 'name' from category";
-            //MainClass.CBFILL(qry, cbCat);
-            //if(cID >0) //for update
-            //{
-            //    cbCat.SelectedValue = cID;
-            //}
-            //if (id  >0)
-            //{
-            //    forUpdateLoadData();
-            //}
             List<Category> categories = categoryBL.GetCategories();
 
             // Đảm bảo ComboBox trống trước khi thêm dữ liệu

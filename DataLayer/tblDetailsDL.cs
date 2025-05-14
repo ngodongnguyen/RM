@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,21 +35,29 @@ namespace DataLayer
             }
             catch (Exception ex) { throw ex; }
         }
-        public List<ProductRevenue> GetProductRevenues()
+        public List<ProductRevenue> GetProductRevenues(string categoryName)
         {
             string pName;
             double total;
-            string sql = "SELECT \r\n    p.pName,\r\n    SUM(od.amount) AS TotalRevenue\r\nFROM \r\n    tblDetails od\r\nJOIN \r\n    Products p ON od.proID = p.pID\r\nJOIN \r\n    tblMain t ON od.MainID = t.MainID\r\nWHERE \r\n    t.status='Paid' and od.MainID!=0\r\nGROUP BY \r\n    p.pID, p.pName, p.pPrice";
+            string cName;
+            string sql = "SELECT    c.catName,p.pName,    SUM(od.amount) AS TotalRevenue \r\nFROM     tblDetails od JOIN   Products p ON od.proID = p.pID \r\nJOIN   tblMain t ON od.MainID = t.MainID \r\njoin category c on c.catID=p.categoryID\r\nWHERE    t.status='Paid' and od.MainID!=0 and c.catName=@catName\r\nGROUP BY    p.pID, p.pName, p.pPrice,c.catName";
             List<ProductRevenue> productRevenues = new List<ProductRevenue>();
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            SqlParameter catName = new SqlParameter();
+            catName.ParameterName = "@catName";
+            catName.SqlDbType = SqlDbType.NVarChar;  // Đặt kiểu dữ liệu là Int
+            catName.Value = categoryName;  // Truyền giá trị của id vào tham số
+            parameters.Add(catName);
             try
             {
                 Connect();
-                SqlDataReader reader = MyExecuteReader(sql, CommandType.Text);
+                SqlDataReader reader = MyExecuteReader(sql, CommandType.Text,parameters);
                 while (reader.Read())
                 {
-                    pName = reader[0].ToString();
-                    total = Convert.ToSingle(reader[1]);
-                    ProductRevenue productRevenue = new ProductRevenue(pName, total);
+                    cName = reader[0].ToString();
+                    pName = reader[1].ToString();
+                    total = Convert.ToSingle(reader[2]);
+                    ProductRevenue productRevenue = new ProductRevenue(cName,pName, total);
                     productRevenues.Add(productRevenue);
                 }
                 reader.Close();

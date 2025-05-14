@@ -29,20 +29,7 @@ namespace RM.View
             GetData();
 
         }
-        //public void GetData()
-        //{
-        //    string qry = "select pID, pName, pPrice, categoryID, c.catName from products p inner join category c on c.catID = p.categoryID where pName like '%" + txtSearch.Text + "%' ";
-        //    ListBox lb = new ListBox();
-        //    lb.Items.Add(dgvid);
-        //    lb.Items.Add(dgvName);
-        //    lb.Items.Add(dgvPrice);
-        //    lb.Items.Add(dgvcatID);
-        //    lb.Items.Add(dgvcat);
 
-
-        //    MainClass.LoadData(qry, guna2DataGridView1, lb);
-
-        //}
         public void GetData()
         {
             try

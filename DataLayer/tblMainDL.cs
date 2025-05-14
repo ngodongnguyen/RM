@@ -15,7 +15,7 @@ using System.Diagnostics;
 
 namespace DataLayer
 {
-    public class tblMainDL:DataProvider
+    public class tblMainDL : DataProvider
     {
         public List<tblMain> GetBillPending()
         {
@@ -31,13 +31,49 @@ namespace DataLayer
                 SqlDataReader reader = MyExecuteReader(sql, CommandType.Text);
                 while (reader.Read())
                 {
-                    MainID =Convert.ToInt32( reader[0]);
+                    MainID = Convert.ToInt32(reader[0]);
                     TableName = reader[1].ToString();
                     WaiterName = reader[2].ToString();
                     orderType = reader[3].ToString();
                     status = reader[4].ToString();
                     total = Convert.ToSingle(reader[5]);
-                    tblMain tblMain = new tblMain(TableName,WaiterName,status,MainID,orderType,total);
+                    tblMain tblMain = new tblMain(TableName, WaiterName, status, MainID, orderType, total);
+                    tblMains.Add(tblMain);
+                }
+                reader.Close();
+                return tblMains;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Disconnect();
+            }
+
+        }
+        public List<tblMain> GetBillComplete()
+        {
+            string TableName, WaiterName, orderType, status;
+            int MainID;
+            float total;
+            List<tblMain> tblMains = new List<tblMain>();
+
+            string sql = "select MainID, TableName, WaiterName, orderType, status, total from tblMain where status = 'complete' ";
+            try
+            {
+                Connect();
+                SqlDataReader reader = MyExecuteReader(sql, CommandType.Text);
+                while (reader.Read())
+                {
+                    MainID = Convert.ToInt32(reader[0]);
+                    TableName = reader[1].ToString();
+                    WaiterName = reader[2].ToString();
+                    orderType = reader[3].ToString();
+                    status = reader[4].ToString();
+                    total = Convert.ToSingle(reader[5]);
+                    tblMain tblMain = new tblMain(TableName, WaiterName, status, MainID, orderType, total);
                     tblMains.Add(tblMain);
                 }
                 reader.Close();
@@ -55,8 +91,8 @@ namespace DataLayer
         }
         public List<tblMain> GetTables_Pending()
         {
-            int mainId,driverId;
-            string aTime, tTime, TableName,WaiterName,status,orderType,CustName,CustPhone;
+            int mainId, driverId;
+            string aTime, tTime, TableName, WaiterName, status, orderType, CustName, CustPhone;
             DateTime aDate;
             double total, received, change;
             List<tblMain> tblMains = new List<tblMain>();
@@ -79,9 +115,9 @@ namespace DataLayer
                     change = Convert.ToSingle(reader[9]);
                     aTime = reader[10].ToString();
                     driverId = Convert.ToInt32(reader[11]);
-                    CustName= reader[12].ToString();
+                    CustName = reader[12].ToString();
                     CustPhone = reader[13].ToString();
-                    tblMain tbl = new tblMain(aDate, tTime, TableName, WaiterName, status, mainId,orderType, total, received, change, aTime, driverId, CustName, CustPhone);
+                    tblMain tbl = new tblMain(aDate, tTime, TableName, WaiterName, status, mainId, orderType, total, received, change, aTime, driverId, CustName, CustPhone);
                     tblMains.Add(tbl);
 
                 }
@@ -100,8 +136,8 @@ namespace DataLayer
         public List<MDPC> GetMDPCs(DateTime startDate, DateTime endDate)
         {
             DateTime aDate;
-            string pName,catName;
-            int qty,MainID,proID,categoryID,catID;
+            string pName, catName;
+            int qty, MainID, proID, categoryID, catID;
             double amount, price;
             List<SqlParameter> parameters = new List<SqlParameter>
     {
@@ -112,21 +148,21 @@ namespace DataLayer
             try
             {
                 Connect();
-                SqlDataReader reader = MyExecuteReader(sql, CommandType.Text,parameters);
+                SqlDataReader reader = MyExecuteReader(sql, CommandType.Text, parameters);
                 while (reader.Read())
                 {
                     MainID = Convert.ToInt32(reader[0]);
-                    proID= Convert.ToInt32(reader[16]);
-                    categoryID= Convert.ToInt32(reader[23]);
-                    catID= Convert.ToInt32(reader[25]);
+                    proID = Convert.ToInt32(reader[16]);
+                    categoryID = Convert.ToInt32(reader[23]);
+                    catID = Convert.ToInt32(reader[25]);
                     aDate = Convert.ToDateTime(reader[1]);
                     pName = reader[21].ToString();
-                    qty = Convert.ToInt32( reader[17]);
-                    price = Convert.ToSingle( reader[18]);
+                    qty = Convert.ToInt32(reader[17]);
+                    price = Convert.ToSingle(reader[18]);
                     amount = Convert.ToSingle(reader[19]);
                     catName = reader[26].ToString();
 
-                    MDPC mdpc = new MDPC(aDate, pName,  qty, price, amount,catName,MainID,proID,categoryID,catID);
+                    MDPC mdpc = new MDPC(aDate, pName, qty, price, amount, catName, MainID, proID, categoryID, catID);
                     mDPCs.Add(mdpc);
                 }
                 reader.Close();
@@ -141,16 +177,20 @@ namespace DataLayer
                 Disconnect();
             }
         }
-        public List<tblMain> GetTotal()
+        public List<tblMain> GetTotal(DateTime startDate, DateTime endDate)
         {
             DateTime dateTime;
             double total;
-            string sql = "SELECT aDate, SUM(total) AS totalAmount FROM tblMain WHERE status = 'Paid' GROUP BY aDate ORDER BY aDate";
+            List<SqlParameter> parameters = new List<SqlParameter>
+    {
+        new SqlParameter("@sdate", SqlDbType.DateTime) { Value = startDate },
+        new SqlParameter("@edate", SqlDbType.DateTime) { Value = endDate } };
+            string sql = "SELECT aDate, SUM(total) AS totalAmount FROM tblMain WHERE status = 'Paid' and aDate between @sdate and @edate GROUP BY aDate ORDER BY aDate";
             List<tblMain> tblMains = new List<tblMain>();
             try
             {
                 Connect();
-                SqlDataReader reader = MyExecuteReader(sql, CommandType.Text);
+                SqlDataReader reader = MyExecuteReader(sql, CommandType.Text,parameters);
                 while (reader.Read())
                 {
                     dateTime = Convert.ToDateTime(reader[0]);
@@ -174,19 +214,19 @@ namespace DataLayer
         public List<tblMain> GetTables()
         {
             string tableName, status;
-            string sql = "SELECT t.tName, m.status\r\nFROM Tables t\r\nLEFT JOIN tblMain m ON t.tName = m.TableName\r\nWHERE m.status = 'Paid' or m.status = 'complete' OR t.tName NOT IN (SELECT TableName FROM tblMain);";
-            List<tblMain> tblMains= new List<tblMain>();
+            string sql = "SELECT t.tName, m.status\r\nFROM Tables t\r\nLEFT JOIN tblMain m ON t.tName = m.TableName\r\nWHERE m.status = 'Paid' OR t.tName NOT IN (SELECT TableName FROM tblMain);";
+            List<tblMain> tblMains = new List<tblMain>();
             try
             {
                 Connect();
                 SqlDataReader reader = MyExecuteReader(sql, CommandType.Text);
-                while(reader.Read())
+                while (reader.Read())
                 {
                     tableName = reader[0].ToString();
                     status = reader[1].ToString();
                     tblMain tblMain = new tblMain(tableName, status);
                     tblMains.Add(tblMain);
-                }    
+                }
                 reader.Close();
                 return tblMains;
             }
@@ -201,21 +241,22 @@ namespace DataLayer
         }
         public List<tblMain> GetAmountOfOrder()
         {
-            DateTime dateTime;
+            int month;
             int MainID;
-            string sql = "SELECT \r\n    aDate,\r\n    COUNT(MainID) AS OrderCount\r\nFROM \r\n    tblMain\r\nWHERE \r\n    status = 'Paid'\r\nGROUP BY \r\n    aDate\r\n";
-            List<tblMain> tblMains= new List<tblMain>();
+            string sql = "SELECT     Month(aDate),    COUNT(MainID) AS OrderCount FROM     tblMain WHERE     status = 'Paid' GROUP BY     Month(aDate)";
+            List<tblMain> tblMains = new List<tblMain>();
             try
             {
                 Connect();
                 SqlDataReader reader = MyExecuteReader(sql, CommandType.Text);
-                while(reader.Read())
+                while (reader.Read())
                 {
-                    dateTime = Convert.ToDateTime(reader[0]);
+                    month = Convert.ToInt32(reader[0]);
                     MainID = Convert.ToInt32(reader[1]);
+                    DateTime dateTime = new DateTime(DateTime.Now.Year, month, 1);
                     tblMain tblMain = new tblMain(dateTime, MainID);
                     tblMains.Add(tblMain);
-                }    
+                }
                 reader.Close();
                 return tblMains;
             }
@@ -232,12 +273,13 @@ namespace DataLayer
         public int Add(tblMain main)
         {
             string sql = "INSERT INTO tblMain (aDate, aTime, TableName, WaiterName, status, orderType, total, received, change, driverID, CustName, CustPhone) " +
-                        "VALUES ('" + main.aDate + "', '" + main.aTime + "', '" + main.TableName + "', '" + main.WaiterName + "', '" + main.Status + "', '" + main.OrderType + "', '" + main.Total + "', '" + main.Received + "', '" + main.Change + "', '" + main.DriverID + "', '" + main.CustName + "', '" + main.CustPhone + "');" +
-                        "SELECT SCOPE_IDENTITY()";
+             "VALUES ('" + main.aDate.ToString("yyyy-MM-dd HH:mm:ss") + "', '" + main.aTime + "', '" + main.TableName + "', '" + main.WaiterName + "', '" + main.Status + "', '" + main.OrderType + "', '" + main.Total + "', '" + main.Received + "', '" + main.Change + "', '" + main.DriverID + "', '" + main.CustName + "', '" + main.CustPhone + "');" +
+             "SELECT SCOPE_IDENTITY()";
+
 
             try
             {
-                object result = MyExecuteScalar(sql,CommandType.Text);  // Lấy giá trị ID mới từ SCOPE_IDENTITY()
+                object result = MyExecuteScalar(sql, CommandType.Text);  // Lấy giá trị ID mới từ SCOPE_IDENTITY()
                 return Convert.ToInt32(result);  // Trả về ID
 
 
@@ -255,7 +297,7 @@ namespace DataLayer
         }
         public int Update_Bill(tblMain main)
         {
-            string sql =  "Update tblMain set total = " + main.Total + ", received = " + main.Received + ", change = " + main.Change + ", status = 'Paid' " +
+            string sql = "Update tblMain set total = " + main.Total + ", received = " + main.Received + ", change = " + main.Change + ", status = 'Paid' " +
              "Where MainID = " + main.MainID;
             ;
             try
@@ -277,7 +319,7 @@ namespace DataLayer
         }
         public int Update_Kitchen(int id)
         {
-            string sql = "Update tblMain set status = 'complete' Where MainID = '"+id+"'";
+            string sql = "Update tblMain set status = 'complete' Where MainID = '" + id + "'";
             ;
             try
             {
@@ -287,13 +329,13 @@ namespace DataLayer
         }
         public List<tblMainDetail> LoadEntries(int id)
         {
-            string proName,orderType,TableName,WaiterName;
+            string proName, orderType, TableName, WaiterName;
             int detailID, proID, qty;
             double price, amount;
             List<tblMainDetail> tblMains = new List<tblMainDetail>();
 
             string sql = @"Select * from tblMain m inner join tblDetails d on m.MainID = d.MainID inner join products p on p.pID = d.proID Where m.MainID = @MainID";
-            List<SqlParameter>parameters = new List<SqlParameter>();
+            List<SqlParameter> parameters = new List<SqlParameter>();
             SqlParameter mainIDParam = new SqlParameter();
             mainIDParam.ParameterName = "@MainID";
             mainIDParam.SqlDbType = SqlDbType.Int;  // Đặt kiểu dữ liệu là Int
@@ -302,7 +344,7 @@ namespace DataLayer
             try
             {
                 Connect();
-                SqlDataReader reader = MyExecuteReader(sql, CommandType.Text,parameters);
+                SqlDataReader reader = MyExecuteReader(sql, CommandType.Text, parameters);
                 while (reader.Read())
                 {
                     TableName = reader[3].ToString();
@@ -314,11 +356,62 @@ namespace DataLayer
                     qty = Convert.ToInt32(reader[17]);
                     price = Convert.ToSingle(reader[18]);
                     amount = Convert.ToSingle(reader[19]);
-                    tblMainDetail tblMainDetail = new tblMainDetail(TableName,WaiterName,orderType,detailID, proID, proName, qty, price, amount);
+                    tblMainDetail tblMainDetail = new tblMainDetail(TableName, WaiterName, orderType, detailID, proID, proName, qty, price, amount);
                     tblMains.Add(tblMainDetail);
                 }
                 reader.Close();
                 return tblMains;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                Disconnect();
+            }
+        }
+        public List<MDP> GetBillList(string id)
+        {
+            string sql = "SELECT m.aDate, m.tTime, m.orderType, m.CustName, m.TableName, m.WaiterName, p.pName, d.qty, d.price, d.amount, m.received, m.change " +
+                         "FROM tblMain m " +
+                         "INNER JOIN tblDetails d ON d.MainID = m.MainID " +
+                         "INNER JOIN products p ON p.pID = d.proID " +
+                         "WHERE m.MainID = @MainID"; // Sử dụng tham số để tránh SQL Injection
+            DateTime aDate;
+            string tTime, orderType, custName, tableName, waiterName, pName;
+            int qty;
+            double price, amount, received, change;
+            List<MDP> mDPCs = new List<MDP>();
+            try
+            {
+                Connect();
+                List<SqlParameter> parameters = new List<SqlParameter>();
+                SqlParameter mainIDParam = new SqlParameter();
+                mainIDParam.ParameterName = "@MainID";
+                mainIDParam.SqlDbType = SqlDbType.Int;  // Đặt kiểu dữ liệu là Int
+                mainIDParam.Value = id;  // Truyền giá trị của id vào tham số
+                parameters.Add(mainIDParam);
+                SqlDataReader reader = MyExecuteReader(sql, CommandType.Text,parameters);
+                while (reader.Read())
+                {
+                    aDate = Convert.ToDateTime(reader["aDate"]);
+                    tTime = reader["tTime"].ToString();
+                    orderType = reader["orderType"].ToString();
+                    custName = reader["CustName"].ToString();
+                    tableName = reader["TableName"].ToString();
+                    waiterName = reader["WaiterName"].ToString();
+                    pName = reader["pName"].ToString();
+                    qty = Convert.ToInt32(reader["qty"]);
+                    price = Convert.ToDouble(reader["price"]);
+                    amount = Convert.ToDouble(reader["amount"]);
+                    received = Convert.ToDouble(reader["received"]);
+                    change = Convert.ToDouble(reader["change"]);
+                    MDP mDPC = new MDP(aDate, tTime, orderType, custName, tableName, waiterName, pName, qty, price, amount, received, change);
+                    mDPCs.Add(mDPC);
+                }
+                reader.Close();
+                return mDPCs;
             }
             catch (Exception ex)
             {

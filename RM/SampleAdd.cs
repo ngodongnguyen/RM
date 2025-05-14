@@ -33,5 +33,10 @@ namespace RM
         {
 
         }
+
+        private void guna2PictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

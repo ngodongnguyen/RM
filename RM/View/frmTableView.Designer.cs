@@ -49,6 +49,11 @@
             this.btnAdd.ImageFlip = Guna.UI2.WinForms.Enums.FlipOrientation.Normal;
             this.btnAdd.PressedState.ImageSize = new System.Drawing.Size(55, 55);
             // 
+            // label2
+            // 
+            this.label2.Size = new System.Drawing.Size(108, 31);
+            this.label2.Text = "Table List";
+            // 
             // guna2DataGridView1
             // 
             this.guna2DataGridView1.AllowUserToAddRows = false;

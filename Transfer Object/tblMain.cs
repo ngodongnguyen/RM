@@ -22,6 +22,7 @@ namespace Transfer_Object
         public int DriverID { get; set; }
         public string CustName { get; set; }
         public string CustPhone { get; set; }
+        public int Month { get; set; }
         public tblMain(DateTime aDate, string tTime, string tableName, string waiterName, string status, int mainID, string orderType, double total, double received, double change, string aTime, int driverID, string custName, string custPhone)
         {
             this.aDate = aDate;
@@ -63,6 +64,11 @@ namespace Transfer_Object
         public tblMain(DateTime date, int id)
         {
             this.aDate = date;
+            this.MainID = id;
+        }
+        public tblMain(int month, int id)
+        {
+            this.Month = month;
             this.MainID = id;
         }
         public tblMain(string tableName, string status)

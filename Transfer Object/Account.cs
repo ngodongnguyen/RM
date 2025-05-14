@@ -10,22 +10,32 @@ namespace Transfer_Object
     {
         public String UserName {  get; set; }
         public String Password { get; set; }
+        //public int userID { get; set; }
 
-        public String uName { get; set; }
+        public int staff_id { get; set; }
 
-        public String uPhone { get; set; }
-
-        public Account(string userName, string password, string uName, string uPhone)
+        //public Account(int userID, string uName,string password,int staffid)
+        //{
+        //    this.userID=userID;
+        //    this.UserName= uName;
+        //    this.Password = password;
+        //    this.staff_id = staffid;
+        //}
+        public Account(string uName, string password)
         {
-            this.UserName = userName;
+            this.UserName = uName;
             this.Password = password;
-            this.uName = uName;
-            this.uPhone = uPhone;
         }
-        public Account(string uName,string password)
+        public Account(string uName, string password,int staffid)
         {
-            this.UserName= uName;
+            this.UserName = uName;
             this.Password = password;
+            this.staff_id=staffid;
         }
+        public Account()
+        {
+
+        }
+
     }
 }

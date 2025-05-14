@@ -1,4 +1,5 @@
 ﻿using Bussiness_Layer;
+using Guna.UI2.WinForms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +21,8 @@ namespace RM.Model
 
         public frmEmailInput()
         {
+            guna2PictureBox1.Image = Properties.Resources.gmail;
+            guna2PictureBox1.SizeMode=PictureBoxSizeMode.StretchImage;
             InitializeComponent();
         }
         public override void btnSave_Click(object sender, EventArgs e)
